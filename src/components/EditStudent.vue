@@ -20,12 +20,14 @@
             <v-layout>
               <v-flex xs12 md4>
                 <v-text-field
-                  v-model="findStudent($route.params.id).firstName"
+                  @input="updateFirstName"
+                  :value="findStudent($route.params.id).firstName"
                   label="First Name"
                   required
                 ></v-text-field>
                 <v-text-field
-                  v-model="findStudent($route.params.id).lastName"
+                  @input="updateLastName"
+                  :value="findStudent($route.params.id).lastName"
                   label="Last Name"
                   required
                 ></v-text-field>
@@ -48,17 +50,30 @@ import { mapGetters } from "vuex";
 
 export default {
   data() {
-    return {};
+    return {
+      firstName: "",
+      lastName: "",
+    };
   },
   computed: {
     ...mapGetters(["isLoaded", "findStudent"]),
   },
   methods: {
     async submit() {
-      axios.put(`http://localhost:3000/students/${this.$route.params.id}`, {
-        firstName: this.student.firstName,
-        lastName: this.student.lastName,
+      const student = this.findStudent(this.$route.params.id);
+      const firstName = this.firstName || student.firstName;
+      const lastName = this.lastName || student.lastName;
+
+      this.$store.dispatch("editStudent", {
+        id: this.$route.params.id,
+        names: { firstName, lastName },
       });
+    },
+    updateFirstName(e) {
+      this.firstName = e;
+    },
+    updateLastName(e) {
+      this.lastName = e;
     },
   },
   components: {

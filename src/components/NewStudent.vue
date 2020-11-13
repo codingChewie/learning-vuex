@@ -45,13 +45,11 @@ export default {
   },
   methods: {
     async submit() {
-      const student = (await axios.post("http://localhost:3000/students", {
+      this.$store.dispatch("createStudent", {
         firstName: this.firstName,
         lastName: this.lastName,
-      })).data;
-      this.addStudent(student);
+      });
     },
-    ...mapMutations(["addStudent"]),
   },
   components: {
     Students,
